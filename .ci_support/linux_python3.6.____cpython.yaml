@@ -39,6 +39,6 @@ python:
 sqlite:
 - '3'
 xrootd:
-- '4.12'
+- '5'
 zlib:
 - '1.2'

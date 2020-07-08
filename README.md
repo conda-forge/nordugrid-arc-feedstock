@@ -5,7 +5,7 @@ Home: http://www.nordugrid.org/
 
 Package license: Apache-2.0
 
-Feedstock license: BSD 3-Clause
+Feedstock license: BSD-3-Clause
 
 Summary: Advanced Resource Connector Middleware
 
