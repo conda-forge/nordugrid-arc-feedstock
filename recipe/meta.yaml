@@ -81,7 +81,7 @@ about:
   home: http://www.nordugrid.org/
   license: Apache-2.0
   license_file: LICENSE
-  summary: 'Advanced Resource Connector Middleware'
+  summary: Advanced Resource Connector Middleware
   description: |
     The Advanced Resource Connector (ARC) middleware, developed by the
     [NorduGrid Collaboration](http://www.nordugrid.org>), is an open source software
