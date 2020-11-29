@@ -32,14 +32,22 @@ export CXXFLAGS
 
 ./autogen.sh
 
+declare -a CONFIGURE_FLAGS
+
+if python --version | grep -c PyPy; then
+     CONFIGURE_FLAGS+=("--with-altpython=${PYTHON}")
+else
+     CONFIGURE_FLAGS+=("--with-python=${PYTHON}")
+fi
+
 ./configure \
      --prefix="${PREFIX}" \
      --disable-static \
      --enable-gfal \
      --enable-s3 \
-     --with-python="${PYTHON}" \
      --disable-doc \
-     --enable-internal
+     --enable-internal \
+     "${CONFIGURE_FLAGS[@]}"
 
 make "-j${CPU_COUNT}"
 
