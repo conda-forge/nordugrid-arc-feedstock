@@ -32,6 +32,9 @@ grep -r 'throw (SRMInvalidRequestException)' .
 CXXFLAGS=$(echo "${CXXFLAGS}" | sed -E 's@-std=c\+\+[^ ]+@-std=c\+\+14@g')
 export CXXFLAGS
 
+# Required for correct detection that Py_InitializeEx is not available for PyPy
+export CFLAGS="${CFLAGS} -Werror-implicit-function-declaration"
+
 ./autogen.sh
 
 declare -a CONFIGURE_FLAGS
