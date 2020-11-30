@@ -41,9 +41,7 @@ declare -a CONFIGURE_FLAGS
 
 if python --version | grep -c PyPy; then
     CONFIGURE_FLAGS+=("PYTHON_CFLAGS=-I$($PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_inc())')")
-    PY_LIBS=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBS'))" | sed s/None//)
-    PY_SYSLIBS=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('SYSLIBS'))" | sed s/None//)
-    CONFIGURE_FLAGS+=(PYTHON_LIBS="$PY_LIBS $PY_SYSLIBS")
+    CONFIGURE_FLAGS+=(PYTHON_LIBS="-L${PREFIX}/lib -lpypy3-c")
 fi
 
 ./configure \

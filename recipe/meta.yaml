@@ -8,6 +8,8 @@ package:
 source:
   url: https://source.coderefinery.org/nordugrid/arc/-/archive/v{{ version }}/arc-v{{ version }}.tar.gz
   sha256: 834110d70de995d90c19ff7c133f6905023725d4c6c2b44af9c409907f400fa8
+  patches:
+    - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch
 
 build:
   number: 1
