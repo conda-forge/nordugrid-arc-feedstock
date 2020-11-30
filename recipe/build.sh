@@ -27,6 +27,8 @@
 # SRMClientRequest.h:110:7: error: ISO C++1z does not allow dynamic exception specifications
 #        throw (SRMInvalidRequestException)
 #        ^~~~~
+# Check if changing the cxx standard is still required
+grep -r 'throw (SRMInvalidRequestException)' .
 CXXFLAGS=$(echo "${CXXFLAGS}" | sed -E 's@-std=c\+\+[^ ]+@-std=c\+\+14@g')
 export CXXFLAGS
 
@@ -35,9 +37,10 @@ export CXXFLAGS
 declare -a CONFIGURE_FLAGS
 
 if python --version | grep -c PyPy; then
-     CONFIGURE_FLAGS+=("--with-altpython=${PYTHON}")
-else
-     CONFIGURE_FLAGS+=("--with-python=${PYTHON}")
+    CONFIGURE_FLAGS+=("PYTHON_CFLAGS=-I$($PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_inc())')")
+    PY_LIBS=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBS'))" | sed s/None//)
+    PY_SYSLIBS=$($PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('SYSLIBS'))" | sed s/None//)
+    CONFIGURE_FLAGS+=(PYTHON_LIBS="$PY_LIBS $PY_SYSLIBS")
 fi
 
 ./configure \
@@ -47,6 +50,8 @@ fi
      --enable-s3 \
      --disable-doc \
      --enable-internal \
+     --disable-ldns \
+     --with-python="${PYTHON}" \
      "${CONFIGURE_FLAGS[@]}"
 
 make "-j${CPU_COUNT}"
