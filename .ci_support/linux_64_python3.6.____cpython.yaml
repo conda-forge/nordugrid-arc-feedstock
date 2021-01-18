@@ -15,7 +15,7 @@ cxx_compiler_version:
 docker_image:
 - quay.io/condaforge/linux-anvil-comp7
 glib:
-- '2.58'
+- '2.66'
 libuuid:
 - 2.32.1
 libxml2:
@@ -47,5 +47,7 @@ xrootd:
 zip_keys:
 - - c_compiler_version
   - cxx_compiler_version
+- - cdt_name
+  - docker_image
 zlib:
 - '1.2'
