@@ -1,5 +1,5 @@
 {% set name = "nordugrid-arc" %}
-{% set version = "6.10.1" %}
+{% set version = "6.10.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://source.coderefinery.org/nordugrid/arc/-/archive/v{{ version }}/arc-v{{ version }}.tar.gz
-  sha256: b87a36858a0183a461ed97280096726497eb3ef658604e81f9fe34a2eafb0aa6
+  sha256: 25557df48e12bc65d6f9bdc243291eeeb4cd3802daa9419540051bde05f12b13
 
 build:
   number: 0
