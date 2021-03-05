@@ -57,7 +57,9 @@ fi
 
 if [ "$target_platform" == "linux-ppc64le" ]; then
     # Travis complains due to the large number of warnings in the log exceeding the maximum log size
+    bash -c 'while true; do echo "Prevent stall"; sleep 60; done' &
     make "-j${CPU_COUNT}" > log.log 2>&1 || (tail -n 1000 log.log; exit 42)
+    kill %1
 else
     make "-j${CPU_COUNT}"
 fi
