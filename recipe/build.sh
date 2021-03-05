@@ -55,7 +55,12 @@ fi
      --with-python="${PYTHON}" \
      "${CONFIGURE_FLAGS[@]}"
 
-make "-j${CPU_COUNT}"
+if [ "$target_platform" == "linux-ppc64le" ]; then
+    # Travis complains due to the large number of warnings in the log exceeding the maximum log size
+    make "-j${CPU_COUNT}" > log.log 2>&1 || (tail -n 1000 log.log; exit 42)
+else
+    make "-j${CPU_COUNT}"
+fi
 
 # This is disabled as it takes a VERY long time
 # make check
