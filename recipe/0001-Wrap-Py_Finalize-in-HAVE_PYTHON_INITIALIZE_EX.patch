@@ -1,0 +1,26 @@
+From c3d9612a2dfc60e80eb543ef43efb86e200218ad Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Mon, 30 Nov 2020 03:33:08 +0100
+Subject: [PATCH] Wrap Py_Finalize in HAVE_PYTHON_INITIALIZE_EX
+
+---
+ src/hed/acc/PythonBroker/PythonBrokerPlugin.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/hed/acc/PythonBroker/PythonBrokerPlugin.cpp b/src/hed/acc/PythonBroker/PythonBrokerPlugin.cpp
+index aa5950c..2ffbdad 100644
+--- a/src/hed/acc/PythonBroker/PythonBrokerPlugin.cpp
++++ b/src/hed/acc/PythonBroker/PythonBrokerPlugin.cpp
+@@ -294,7 +294,9 @@ namespace Arc {
+     // Finish the Python Interpreter
+     if (refcount == 0) {
+       PyEval_AcquireThread(tstate);
++#ifdef HAVE_PYTHON_INITIALIZE_EX
+       Py_Finalize();
++#endif
+     }
+ 
+     lock.unlock();
+-- 
+2.29.2
+

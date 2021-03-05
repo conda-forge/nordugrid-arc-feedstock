@@ -1,0 +1,84 @@
+From e4991004da38296047322e894b20d2d675e4d96e Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Mon, 30 Nov 2020 04:56:37 +0100
+Subject: [PATCH] Fix missing PyPy calls
+
+---
+ python/arc_init.cpp | 49 ---------------------------------------------
+ swig/compute.i      |  2 +-
+ 2 files changed, 1 insertion(+), 50 deletions(-)
+
+diff --git a/python/arc_init.cpp b/python/arc_init.cpp
+index 8459c84..07bdf7f 100644
+--- a/python/arc_init.cpp
++++ b/python/arc_init.cpp
+@@ -30,53 +30,4 @@ static bool __arc_init_try_path(const std::string& modulepath) {
+ }
+ 
+ __attribute__((constructor)) void __arc_init(void) {
+-
+-/*
+-char* Py_GetPath ()
+-Return the default module search path; this is computed from the program
+-name (set by Py_SetProgramName() above) and some environment variables. The
+-returned string consists of a series of directory names separated by a
+-platform dependent delimiter character. The delimiter character is ":" on
+-Unix, ";" on DOS/Windows, and "\n" (the ASCII newline character) on
+-Macintosh. The returned string points into static storage; the caller should
+-not modify its value. The value is available to Python code as the list
+-sys.path, which may be modified to change the future search path for loaded
+-modules.
+-Note: it seems like Python is hiding site-packages part of path. Maybe it
+-is hardcoded inside Python somewhere. But at least part till site-packages
+-seems to be present.
+-*/
+-#if PY_MAJOR_VERSION >= 3
+-  std::wstring pythonwpath = Py_GetPath();
+-  std::string pythonpath(pythonwpath.begin(), pythonwpath.end());
+-#else
+-  std::string pythonpath = Py_GetPath();
+-#endif
+-  std::string::size_type start = 0;
+-  std::string::size_type end = pythonpath.find_first_of(";:\n");
+-  if(end == std::string::npos) end=pythonpath.length();
+-  for(;start<pythonpath.length();) {
+-    std::string path;
+-    std::string modulepath;
+-    path = pythonpath.substr(start,end-start);
+-
+-    // Possible options
+-    //  PATH/_arc.so
+-    //  PATH/site-packages/_arc.so
+-    //  PATH/arc/_arc.so
+-    //  PATH/site-packages/arc/_arc.so
+-    modulepath = Glib::build_filename(path,std::string("_arc.")+G_MODULE_SUFFIX);
+-    if(__arc_init_try_path(modulepath)) return;
+-    modulepath = Glib::build_filename(Glib::build_filename(path,"site-packages"),std::string("_arc.")+G_MODULE_SUFFIX);
+-    if(__arc_init_try_path(modulepath)) return;
+-    modulepath = Glib::build_filename(Glib::build_filename(path,"arc"),std::string("_arc.")+G_MODULE_SUFFIX);
+-    if(__arc_init_try_path(modulepath)) return;
+-    modulepath = Glib::build_filename(Glib::build_filename(Glib::build_filename(path,"site-packages"),"arc"),std::string("_arc.")+G_MODULE_SUFFIX);
+-    if(__arc_init_try_path(modulepath)) return;
+-
+-    start=end+1;
+-    end=pythonpath.find_first_of(";:\n",start);
+-    if(end == std::string::npos) end=pythonpath.length();
+-  };
+ }
+-
+diff --git a/swig/compute.i b/swig/compute.i
+index 2412a7c..67c437b 100644
+--- a/swig/compute.i
++++ b/swig/compute.i
+@@ -7,7 +7,7 @@
+         PyErr_Fetch( &ptype, &pvalue, &ptraceback );
+         PyErr_Restore( ptype, pvalue, ptraceback );
+         PyErr_Print();
+-        Py_Exit(1);
++        PyErr_SetObject(PyExc_SystemExit, PyLong_FromLong(1));
+     }
+ }
+ 
+-- 
+2.29.2
+
