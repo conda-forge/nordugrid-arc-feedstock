@@ -11,7 +11,6 @@ source:
   patches:
     - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch  # [python_impl == 'pypy']
     - 0002-Fix-missing-PyPy-calls.patch                         # [python_impl == 'pypy']
-    - 0003-Use-EXT_SUFFIX-instead-of-SOABI-for-setting-Python-e.patch
 
 build:
   number: 0
