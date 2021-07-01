@@ -54,6 +54,7 @@ fi
      --disable-static \
      --enable-gfal \
      --enable-s3 \
+     --with-xrootd="${PREFIX}" \
      --disable-doc \
      --enable-internal \
      --disable-ldns \
