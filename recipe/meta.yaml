@@ -100,7 +100,7 @@ test:
     - test -f "${PREFIX}/lib/arc/libmcctls.so"
     - test -f "${PREFIX}/lib/arc/libmodcredential.so"
     - test -f "${PREFIX}/lib/arc/libmodcrypto.so"
-    - test -f "${PREFIX}/lib/arc/libpythonservice.so"
+    - test -f "${PREFIX}/lib/arc/libpythonservice.so"  # [python_impl != 'pypy']
   imports:
     # This doesn't actually test anything as it's wrapped in a try catch...
     - arc
