@@ -1,0 +1,24 @@
+From f22b27de0d1f622bd14cc503bb5364ab348fbe7c Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Thu, 1 Jul 2021 19:29:35 +0200
+Subject: [PATCH] Fix finding INSTPREFIX
+
+---
+ src/hed/libs/common/ArcLocation.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/hed/libs/common/ArcLocation.cpp b/src/hed/libs/common/ArcLocation.cpp
+index fdcf93b..b68d570 100644
+--- a/src/hed/libs/common/ArcLocation.cpp
++++ b/src/hed/libs/common/ArcLocation.cpp
+@@ -129,6 +129,7 @@ namespace Arc {
+                                   "Using %s. Please set ARC_LOCATION "
+                                   "if this is not correct.", INSTPREFIX);
+       location() = INSTPREFIX;
++      location().erase(std::find(location().begin(), location().end(), '\0'), location().end());
+     }
+ #ifdef ENABLE_NLS
+     bindtextdomain(PACKAGE, (location() + G_DIR_SEPARATOR_S "share" G_DIR_SEPARATOR_S "locale").c_str());
+-- 
+2.28.0
+

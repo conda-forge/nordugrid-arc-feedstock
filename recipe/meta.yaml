@@ -11,9 +11,11 @@ source:
   patches:
     - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch  # [python_impl == 'pypy']
     - 0002-Fix-missing-PyPy-calls.patch                         # [python_impl == 'pypy']
+    - 0003-Fix-LDFLAGS-for-finding-ldap.patch
+    - 0004-Fix-finding-INSTPREFIX.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win or osx]
 
 requirements:
@@ -36,6 +38,7 @@ requirements:
     - libsigcpp =2
     - libuuid
     - libxml2
+    - openldap
     - openssl
     - sqlite
     - xrootd
@@ -66,6 +69,38 @@ test:
     - arcsub --help
     - arcsync --help
     - arctest --help
+    - test -f "${PREFIX}/lib/arc/filedirplugin.so"
+    - test -f "${PREFIX}/lib/arc/libaccARCREST.so"
+    - test -f "${PREFIX}/lib/arc/libaccBroker.so"
+    - test -f "${PREFIX}/lib/arc/libaccEMIES.so"
+    - test -f "${PREFIX}/lib/arc/libaccGRIDFTPJOB.so"
+    - test -f "${PREFIX}/lib/arc/libaccJobDescriptionParser.so"
+    - test -f "${PREFIX}/lib/arc/libaccLDAP.so"
+    - test -f "${PREFIX}/lib/arc/libaccPythonBroker.so"
+    - test -f "${PREFIX}/lib/arc/libarcshc.so"
+    - test -f "${PREFIX}/lib/arc/libarcshclegacy.so"
+    - test -f "${PREFIX}/lib/arc/libarcshcotokens.so"
+    - test -f "${PREFIX}/lib/arc/libarguspdpclient.so"
+    - test -f "${PREFIX}/lib/arc/libdatadeliveryservice.so"
+    - test -f "${PREFIX}/lib/arc/libdmcacix.so"
+    - test -f "${PREFIX}/lib/arc/libdmcfile.so"
+    - test -f "${PREFIX}/lib/arc/libdmcgfaldeleg.so"
+    - test -f "${PREFIX}/lib/arc/libdmcgridftpdeleg.so"
+    - test -f "${PREFIX}/lib/arc/libdmchttp.so"
+    - test -f "${PREFIX}/lib/arc/libdmcldap.so"
+    - test -f "${PREFIX}/lib/arc/libdmcrucio.so"
+    - test -f "${PREFIX}/lib/arc/libdmcsrm.so"
+    - test -f "${PREFIX}/lib/arc/libdmcxrootddeleg.so"
+    - test -f "${PREFIX}/lib/arc/libecho.so"
+    - test -f "${PREFIX}/lib/arc/libidentitymap.so"
+    - test -f "${PREFIX}/lib/arc/libmcchttp.so"
+    - test -f "${PREFIX}/lib/arc/libmccmsgvalidator.so"
+    - test -f "${PREFIX}/lib/arc/libmccsoap.so"
+    - test -f "${PREFIX}/lib/arc/libmcctcp.so"
+    - test -f "${PREFIX}/lib/arc/libmcctls.so"
+    - test -f "${PREFIX}/lib/arc/libmodcredential.so"
+    - test -f "${PREFIX}/lib/arc/libmodcrypto.so"
+    - test -f "${PREFIX}/lib/arc/libpythonservice.so"  # [python_impl != 'pypy']
   imports:
     # This doesn't actually test anything as it's wrapped in a try catch...
     - arc
