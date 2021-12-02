@@ -23,7 +23,7 @@ gfal2:
 glib:
 - '2'
 libuuid:
-- 2.32.1
+- '2'
 libxml2:
 - '2.9'
 openssl:
