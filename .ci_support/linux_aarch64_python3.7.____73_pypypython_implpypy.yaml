@@ -18,6 +18,8 @@ cxx_compiler_version:
 - '9'
 docker_image:
 - quay.io/condaforge/linux-anvil-aarch64
+gct:
+- 6.2.1629922860
 gfal2:
 - '2.20'
 glib:
