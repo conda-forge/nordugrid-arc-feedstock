@@ -1,0 +1,52 @@
+From 173a1638ff2a7410660c590fb588b6a48da24b57 Mon Sep 17 00:00:00 2001
+From: Chris Burr <chirstopher.burr@cern.ch>
+Date: Thu, 17 Mar 2022 08:43:18 +0000
+Subject: [PATCH] Fix compilation for python 3.10+
+
+---
+ configure.ac | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index ef3ab3d..3bbd14f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -376,7 +376,7 @@ if test "$enables_python" = "yes"; then
+     PYTHON_VERSION=`$PKG_CONFIG --modversion $PYNAME`
+     PYTHON_MAJOR=`echo $PYTHON_VERSION|cut -f1 -d.`
+     ],[
+-    PYNAME=python-`$PYTHON -c 'import sys; print(sys.version[[:3]])'`
++    PYNAME=python-`$PYTHON -c 'import sys; print(".".join(sys.version.split(".")[[:2]]))'`
+     PKG_CHECK_MODULES(PYTHON, $PYNAME-embed, [
+     PYTHON_VERSION=`$PKG_CONFIG --modversion $PYNAME-embed`
+     PYTHON_MAJOR=`echo $PYTHON_VERSION|cut -f1 -d.`
+@@ -385,7 +385,7 @@ if test "$enables_python" = "yes"; then
+     PYTHON_VERSION=`$PKG_CONFIG --modversion $PYNAME`
+     PYTHON_MAJOR=`echo $PYTHON_VERSION|cut -f1 -d.`
+     ],[
+-    PYTHON_VERSION=`$PYTHON -c 'import sys; print(sys.version[[:3]])'`
++    PYTHON_VERSION=`$PYTHON -c 'import sys; print(".".join(sys.version.split(".")[[:2]]))'`
+     PYTHON_MAJOR=`$PYTHON -c 'import sys; print(sys.version_info[[0]])'`
+     PYTHON_CFLAGS=-I`$PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_inc())'`
+     PY_LIBS=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBS'))" | sed s/None//`
+@@ -515,7 +515,7 @@ if test "$enables_altpython" = "yes"; then
+     ALTPYTHON_VERSION=`$PKG_CONFIG --modversion $ALTPYNAME`
+     ALTPYTHON_MAJOR=`echo $ALTPYTHON_VERSION|cut -f1 -d.`
+     ],[
+-    ALTPYNAME=python-`$ALTPYTHON -c 'import sys; print(sys.version[[:3]])'`
++    ALTPYNAME=python-`$ALTPYTHON -c 'import sys; print(".".join(sys.version.split(".")[[:2]]))'`
+     PKG_CHECK_MODULES(ALTPYTHON, $ALTPYNAME-embed, [
+     ALTPYTHON_VERSION=`$PKG_CONFIG --modversion $ALTPYNAME-embed`
+     ALTPYTHON_MAJOR=`echo $ALTPYTHON_VERSION|cut -f1 -d.`
+@@ -524,7 +524,7 @@ if test "$enables_altpython" = "yes"; then
+     ALTPYTHON_VERSION=`$PKG_CONFIG --modversion $ALTPYNAME`
+     ALTPYTHON_MAJOR=`echo $ALTPYTHON_VERSION|cut -f1 -d.`
+     ],[
+-    ALTPYTHON_VERSION=`$ALTPYTHON -c 'import sys; print(sys.version[[:3]])'`
++    ALTPYTHON_VERSION=`$ALTPYTHON -c 'import sys; print(".".join(sys.version.split(".")[[:2]]))'`
+     ALTPYTHON_MAJOR=`$ALTPYTHON -c 'import sys; print(sys.version_info[[0]])'`
+     ALTPYTHON_CFLAGS=-I`$ALTPYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_inc())'`
+     ALTPY_LIBS=`$ALTPYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBS'))" | sed s/None//`
+-- 
+2.35.1
+
