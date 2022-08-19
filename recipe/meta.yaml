@@ -16,7 +16,7 @@ source:
     - 0005-Fix-compilation-for-python-3.10.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win or osx]
 
 requirements:
