@@ -21,7 +21,7 @@ docker_image:
 gct:
 - 6.2.1629922860
 gfal2:
-- '2.20'
+- '2.21'
 glib:
 - '2'
 libuuid:
@@ -43,7 +43,7 @@ pin_run_as_build:
   zlib:
     max_pin: x.x
 python:
-- 3.9.* *_cpython
+- 3.8.* *_cpython
 python_impl:
 - cpython
 sqlite:
