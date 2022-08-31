@@ -13,7 +13,6 @@ source:
     - 0002-Fix-missing-PyPy-calls.patch                         # [python_impl == 'pypy']
     - 0003-Fix-LDFLAGS-for-finding-ldap.patch
     - 0004-Fix-finding-INSTPREFIX.patch
-    - 0005-Fix-compilation-for-python-3.10.patch
 
 build:
   number: 0
