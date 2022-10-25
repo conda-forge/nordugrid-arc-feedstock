@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 # Avoid letting arc/__init__.py supress errors
-import _arc
 import arc
+import _arc
 
 
 conda_prefix = Path(os.environ["CONDA_PREFIX"])
