@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+# Avoid letting arc/__init__.py supress errors
+import _arc
 import arc
 
 
