@@ -35,7 +35,7 @@ requirements:
     - gfal2
     - glib
     - glibmm-2.4
-    - libsigcpp =2
+    - libsigcpp
     - libuuid
     - libxml2
     - openldap
