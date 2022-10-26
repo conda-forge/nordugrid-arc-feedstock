@@ -44,11 +44,6 @@ if python --version | grep -c PyPy; then
     CONFIGURE_FLAGS+=(PYTHON_LIBS="-L${PREFIX}/lib -lpypy3-c")
 fi
 
-if [ "$target_platform" == "linux-ppc64le" ]; then
-    # Travis complains due to the large number of warnings in the log exceeding the maximum log size
-    bash -c 'while true; do echo "Prevent stall"; sleep 60; done' &
-fi
-
 ./configure \
      --prefix="${PREFIX}" \
      --disable-static \
@@ -61,12 +56,8 @@ fi
      --with-python="${PYTHON}" \
      "${CONFIGURE_FLAGS[@]}"
 
-if [ "$target_platform" == "linux-ppc64le" ]; then
-    make "-j${CPU_COUNT}" > log.log 2>&1 || (tail -n 1000 log.log; exit 42)
-    kill %1
-else
-    make "-j${CPU_COUNT}"
-fi
+
+make "-j${CPU_COUNT}"
 
 # This is disabled as it takes a VERY long time
 # make check
