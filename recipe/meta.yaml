@@ -34,7 +34,7 @@ requirements:
     - gct
     - gfal2
     - glib
-    - glibmm
+    - glibmm-2.4
     - libsigcpp =2
     - libuuid
     - libxml2
@@ -45,7 +45,6 @@ requirements:
     - zlib
   run:
     - python
-    - {{ pin_compatible('glibmm') }}
 
 test:
   commands:
