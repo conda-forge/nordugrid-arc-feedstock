@@ -15,7 +15,7 @@ source:
     - 0004-Fix-finding-INSTPREFIX.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win or osx]
 
 requirements:
@@ -35,7 +35,7 @@ requirements:
     - gfal2
     - glib
     - glibmm-2.4
-    - libsigcpp =2
+    - libsigcpp
     - libuuid
     - libxml2
     - openldap
