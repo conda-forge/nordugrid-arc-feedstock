@@ -1,5 +1,5 @@
 {% set name = "nordugrid-arc" %}
-{% set version = "6.16.0" %}
+{% set version = "6.16.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://source.coderefinery.org/nordugrid/arc/-/archive/v{{ version }}/arc-v{{ version }}.tar.gz
-  sha256: 5ce62154f53537c39c6c57dbfc93cdac72bf28b969b5724c99b5b31e8aab60b1
+  sha256: 2677ad70e2b35544209137f2393d2c1b22be1bd1cf9622c73a48b45da1d43abb
   patches:
     - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch  # [python_impl == 'pypy']
     - 0002-Fix-missing-PyPy-calls.patch                         # [python_impl == 'pypy']
