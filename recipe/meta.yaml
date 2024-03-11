@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://source.coderefinery.org/nordugrid/arc/-/archive/v{{ version }}/arc-v{{ version }}.tar.gz
-  sha256: 555d0471a3bbc5e2fe411409752125369d2b6edaa0ad8ed5c4dc2917e99814ee
+  sha256: 2c58a0dd9f6dc84b8a228fdb0df1e09cbf52d31ea1f577d9f3ae375e773084c6
   patches:
     - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch  # [python_impl == 'pypy']
     - 0002-Fix-missing-PyPy-calls.patch                         # [python_impl == 'pypy']
