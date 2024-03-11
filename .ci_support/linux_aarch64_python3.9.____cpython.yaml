@@ -21,13 +21,13 @@ docker_image:
 gct:
 - 6.2.1629922860
 gfal2:
-- '2.21'
+- '2.22'
 glib:
 - '2'
 libuuid:
 - '2'
 libxml2:
-- '2.11'
+- '2'
 openssl:
 - '3'
 pin_run_as_build:
