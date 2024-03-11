@@ -27,7 +27,7 @@ glib:
 libuuid:
 - '2'
 libxml2:
-- '2.11'
+- '2'
 openssl:
 - '3'
 pin_run_as_build:
