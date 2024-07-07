@@ -1,5 +1,5 @@
 {% set name = "nordugrid-arc" %}
-{% set version = "6.17.0" %}
+{% set version = "6.20.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://source.coderefinery.org/nordugrid/arc/-/archive/v{{ version }}/arc-v{{ version }}.tar.gz
-  sha256: 3e43489424daeef8669ecd6ca74e001c6fcaff1b98b96a5ee8e21747ee4bfeeb
+  sha256: 87ba07131dea06c7a4c98725c84407a23d0ed18926aa1ceadca9c370e11398b0
   patches:
     - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch  # [python_impl == 'pypy']
     - 0002-Fix-missing-PyPy-calls.patch                         # [python_impl == 'pypy']
@@ -15,12 +15,13 @@ source:
     - 0004-Fix-finding-INSTPREFIX.patch
 
 build:
-  number: 1
+  number: 0
   skip: true  # [win or osx]
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - pkg-config
     - make
