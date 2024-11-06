@@ -15,12 +15,13 @@ source:
     - 0004-Fix-finding-INSTPREFIX.patch
 
 build:
-  number: 1
+  number: 2
   skip: true  # [win or osx]
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - pkg-config
     - make
