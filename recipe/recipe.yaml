@@ -18,6 +18,7 @@ source:
       then: 0002-Fix-missing-PyPy-calls.patch
     - 0003-Fix-LDFLAGS-for-finding-ldap.patch
     - 0004-Fix-finding-INSTPREFIX.patch
+    - 0001-Replace-use-of-distutils-for-Python-3.12-compatibili.patch
 
 build:
   number: 0
