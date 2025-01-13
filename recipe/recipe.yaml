@@ -1,0 +1,144 @@
+schema_version: 1
+
+context:
+  name: nordugrid-arc
+  version: 6.21.1
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://source.coderefinery.org/nordugrid/arc/-/archive/v${{ version }}/arc-v${{ version }}.tar.gz
+  sha256: e12c7dffdb0c4a2b55059094376b3947ee669cdbf6fd2534a1fb1aaeeec49336
+  patches:
+    - if: "python_impl == 'pypy'"
+      then: 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch
+    - if: "python_impl == 'pypy'"
+      then: 0002-Fix-missing-PyPy-calls.patch
+    - 0003-Fix-LDFLAGS-for-finding-ldap.patch
+    - 0004-Fix-finding-INSTPREFIX.patch
+    - 0001-Replace-use-of-distutils-for-Python-3.12-compatibili.patch
+
+build:
+  number: 0
+  skip: win or osx
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler('cxx') }}
+    - pkg-config
+    - make
+    - autoconf
+    - automake
+    - gettext
+    - libtool
+  host:
+    - python
+    - swig
+    - cppunit
+    - gct
+    - gfal2
+    - glib
+    - glibmm-2.4
+    - libsigcpp
+    - libuuid
+    - libxml2
+    - openldap
+    - openssl
+    - sqlite
+    - xrootd
+    - zlib
+  run:
+    - python
+
+tests:
+  - python:
+      imports:
+        - arc
+        - _arc
+        - arc.common
+        - arc.loader
+        - arc.message
+        - arc.compute
+        - arc.communication
+        - arc.credential
+        - arc.data
+        - arc.delegation
+        - arc.security
+      pip_check: false
+  - script:
+      - arccat --help
+      - arccat --help
+      - arcclean --help
+      - arccp --help
+      - arcget --help
+      - arcinfo --help
+      - arckill --help
+      - arcls --help
+      - arcmkdir --help
+      - arcplugin --help
+      - arcproxy --help
+      - arcrename --help
+      - arcrenew --help
+      - arcresub --help
+      - arcresume --help
+      - arcrm --help
+      - arcstat --help
+      - arcsub --help
+      - arcsync --help
+      - arctest --help
+      - "test -f \"${PREFIX}/lib/arc/filedirplugin.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccARCREST.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccBroker.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccEMIES.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccGRIDFTPJOB.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccJobDescriptionParser.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccLDAP.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccPythonBroker.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarcshc.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarcshclegacy.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarcshcotokens.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarguspdpclient.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdatadeliveryservice.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcacix.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcfile.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcgfaldeleg.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcgridftpdeleg.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmchttp.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcldap.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcrucio.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcsrm.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcxrootddeleg.so\""
+      - "test -f \"${PREFIX}/lib/arc/libecho.so\""
+      - "test -f \"${PREFIX}/lib/arc/libidentitymap.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmcchttp.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmccmsgvalidator.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmccsoap.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmcctcp.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmcctls.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmodcredential.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmodcrypto.so\""
+      - if: "python_impl != 'pypy'"
+        then: "test -f \"${PREFIX}/lib/arc/libpythonservice.so\""
+
+about:
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Advanced Resource Connector Middleware
+  description: |
+    The Advanced Resource Connector (ARC) middleware, developed by the
+    [NorduGrid Collaboration](http://www.nordugrid.org>), is an open source software
+    solution enabling e-Science computing infrastructures with emphasis on
+    processing of large data volumes.
+    ARC has been used to enable national and international e-infrastructures
+    since its first release in 2002.
+  homepage: http://www.nordugrid.org/
+  repository: https://source.coderefinery.org/nordugrid/
+  documentation: http://www.nordugrid.org/arc/arc6
+
+extra:
+  recipe-maintainers:
+    - chrisburr

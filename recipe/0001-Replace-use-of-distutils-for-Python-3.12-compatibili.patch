@@ -1,0 +1,95 @@
+From b88eb058faa762ea2779f85271bbd55b8fd03f22 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Mon, 13 Jan 2025 13:11:55 +0100
+Subject: [PATCH] Replace use of distutils for Python 3.12+ compatibility
+
+---
+ configure.ac | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index eb7a1ddf8..0c3210c32 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -387,10 +387,10 @@ if test "$enables_python" = "yes"; then
+     ],[
+     PYTHON_VERSION=`$PYTHON -c 'import sys; print(".".join(sys.version.split(" ")[[0]].split(".")[[:2]]))'`
+     PYTHON_MAJOR=`$PYTHON -c 'import sys; print(sys.version_info[[0]])'`
+-    PYTHON_CFLAGS=-I`$PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_inc())'`
+-    PY_LIBS=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBS'))" | sed s/None//`
+-    PY_SYSLIBS=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('SYSLIBS'))" | sed s/None//`
+-    PY_LIBDEST=`$PYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBDEST'))" | sed s/None//`
++    PYTHON_CFLAGS=-I`$PYTHON -c 'import sysconfig; print(sysconfig.get_paths()["include"])'`
++    PY_LIBS=`$PYTHON -c "import sysconfig; print(sysconfig.get_config_var('LIBS'))" | sed s/None//`
++    PY_SYSLIBS=`$PYTHON -c "import sysconfig; print(sysconfig.get_config_var('SYSLIBS'))" | sed s/None//`
++    PY_LIBDEST=`$PYTHON -c "import sysconfig; print(sysconfig.get_config_var('LIBDEST'))" | sed s/None//`
+     PYTHON_LIBS="$PY_LIBS $PY_SYSLIBS"
+     SAVE_LDFLAGS=$LDFLAGS
+     LDFLAGS="$PYTHON_LIBS $LDFLAGS"
+@@ -410,7 +410,7 @@ if test "$enables_python" = "yes"; then
+     AC_SUBST(PYTHON_LIBS)
+ 
+     if test "${build}" = "${host}"; then
+-        PYTHON_EXT_SUFFIX=`$PYTHON -c "from distutils import sysconfig; v = sysconfig.get_config_vars(); print(v.get('EXT_SUFFIX', v.get('SO')))" | sed s/None//`
++        PYTHON_EXT_SUFFIX=`$PYTHON -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SO'))" | sed s/None//`
+     else
+         PYTHON_EXT_SUFFIX=""
+     fi
+@@ -419,7 +419,7 @@ if test "$enables_python" = "yes"; then
+     AC_ARG_WITH(python-site-arch, AC_HELP_STRING([--with-python-site-arch=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
+     if test "X$PYTHON_SITE_ARCH" = "X"; then
+       if test "${build}" = "${host}"; then
+-        PYTHON_SITE_ARCH=`$PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,"${prefix}"))'`
++        PYTHON_SITE_ARCH=`$PYTHON -c 'import sysconfig; print(sysconfig.get_path("platlib"))'`
+       else
+         PYTHON_SITE_ARCH="${libdir}/python${PYTHON_VERSION}/site-packages"
+       fi
+@@ -429,7 +429,7 @@ if test "$enables_python" = "yes"; then
+     AC_ARG_WITH(python-site-lib, AC_HELP_STRING([--with-python-site-lib=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
+     if test "X$PYTHON_SITE_LIB" = "X"; then
+       if test "${build}" = "${host}"; then
+-        PYTHON_SITE_LIB=`$PYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(0,0,"${prefix}"))'`
++        PYTHON_SITE_LIB=`$PYTHON -c 'import sysconfig; print(sysconfig.get_path("purelib"))'`
+       else
+         PYTHON_SITE_LIB="${libdir}/python${PYTHON_VERSION}/site-packages"
+       fi
+@@ -526,10 +526,10 @@ if test "$enables_altpython" = "yes"; then
+     ],[
+     ALTPYTHON_VERSION=`$ALTPYTHON -c 'import sys; print(".".join(sys.version.split(" ")[[0]].split(".")[[:2]]))'`
+     ALTPYTHON_MAJOR=`$ALTPYTHON -c 'import sys; print(sys.version_info[[0]])'`
+-    ALTPYTHON_CFLAGS=-I`$ALTPYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_inc())'`
+-    ALTPY_LIBS=`$ALTPYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBS'))" | sed s/None//`
+-    ALTPY_SYSLIBS=`$ALTPYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('SYSLIBS'))" | sed s/None//`
+-    ALTPY_LIBDEST=`$ALTPYTHON -c "from distutils import sysconfig; print(sysconfig.get_config_vars().get('LIBDEST'))" | sed s/None//`
++    ALTPYTHON_CFLAGS=-I`$ALTPYTHON -c 'import sysconfig; print(sysconfig.get_paths()["include"])'`
++    ALTPY_LIBS=`$ALTPYTHON -c "import sysconfig; print(sysconfig.get_config_var('LIBS'))" | sed s/None//`
++    ALTPY_SYSLIBS=`$ALTPYTHON -c "import sysconfig; print(sysconfig.get_config_var('SYSLIBS'))" | sed s/None//`
++    ALTPY_LIBDEST=`$ALTPYTHON -c "import sysconfig; print(sysconfig.get_config_var('LIBDEST'))" | sed s/None//`
+     ALTPYTHON_LIBS="$ALTPY_LIBS $ALTPY_SYSLIBS"
+     SAVE_LDFLAGS=$LDFLAGS
+     LDFLAGS="$ALTPYTHON_LIBS $LDFLAGS"
+@@ -548,18 +548,18 @@ if test "$enables_altpython" = "yes"; then
+     AC_SUBST(ALTPYTHON_CFLAGS)
+     AC_SUBST(ALTPYTHON_LIBS)
+ 
+-    ALTPYTHON_EXT_SUFFIX=`$ALTPYTHON -c "from distutils import sysconfig; v = sysconfig.get_config_vars(); print(v.get('EXT_SUFFIX', v.get('SO')))" | sed s/None//`
++    ALTPYTHON_EXT_SUFFIX=`$ALTPYTHON -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SO'))" | sed s/None//`
+     AC_SUBST(ALTPYTHON_EXT_SUFFIX)
+ 
+     AC_ARG_WITH(altpython-site-arch, AC_HELP_STRING([--with-altpython-site-arch=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
+     if test "X$ALTPYTHON_SITE_ARCH" = "X"; then
+-      ALTPYTHON_SITE_ARCH=`$ALTPYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,"${prefix}"))'`
++      ALTPYTHON_SITE_ARCH=`$ALTPYTHON -c 'import sysconfig; print(sysconfig.get_path("platlib"))'`
+     fi
+     AC_SUBST(ALTPYTHON_SITE_ARCH)
+ 
+     AC_ARG_WITH(altpython-site-lib, AC_HELP_STRING([--with-altpython-site-lib=directory], [Direcory where Python modules will be installed - defaults is to query the Python binary]))
+     if test "X$ALTPYTHON_SITE_LIB" = "X"; then
+-      ALTPYTHON_SITE_LIB=`$ALTPYTHON -c 'from distutils import sysconfig; print(sysconfig.get_python_lib(0,0,"${prefix}"))'`
++      ALTPYTHON_SITE_LIB=`$ALTPYTHON -c 'import sysconfig; print(sysconfig.get_path("purelib"))'`
+     fi
+     AC_SUBST(ALTPYTHON_SITE_LIB)
+ 
+-- 
+2.44.0
+
