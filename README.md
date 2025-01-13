@@ -20,7 +20,6 @@ processing of large data volumes.
 ARC has been used to enable national and international e-infrastructures
 since its first release in 2002.
 
-
 Current build status
 ====================
 
