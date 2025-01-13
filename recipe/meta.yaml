@@ -27,6 +27,7 @@ requirements:
     - make
     - autoconf
     - automake
+    - gettext
     - libtool
   host:
     - python
