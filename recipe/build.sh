@@ -62,6 +62,6 @@ make "-j${CPU_COUNT}"
 # This is disabled as it takes a VERY long time
 # make check
 
-make "-j${CPU_COUNT}" install
+make install
 
 make installcheck
