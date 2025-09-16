@@ -45,7 +45,7 @@ requirements:
     - glibmm-2.4
     - libsigcpp
     - libuuid
-    - libxml2
+    - libxml2-devel
     - openldap
     - openssl
     - sqlite
