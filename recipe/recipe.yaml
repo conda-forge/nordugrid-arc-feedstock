@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: nordugrid-arc
-  version: 6.21.1
+  version: "7.0.0"
 
 package:
   name: ${{ name|lower }}
@@ -10,12 +10,12 @@ package:
 
 source:
   url: https://source.coderefinery.org/nordugrid/arc/-/archive/v${{ version }}/arc-v${{ version }}.tar.gz
-  sha256: e12c7dffdb0c4a2b55059094376b3947ee669cdbf6fd2534a1fb1aaeeec49336
+  sha256: 4f5b32d8b2eb9fff159aafa151d539e7d542eef4b0011ca153e091b8764f316e
   patches:
     - if: "python_impl == 'pypy'"
-      then: 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch
-    - if: "python_impl == 'pypy'"
-      then: 0002-Fix-missing-PyPy-calls.patch
+      then:
+        - 0001-Wrap-Py_Finalize-in-HAVE_PYTHON_INITIALIZE_EX.patch
+        - 0002-Fix-missing-PyPy-calls.patch
     - 0003-Fix-LDFLAGS-for-finding-ldap.patch
     - 0004-Fix-finding-INSTPREFIX.patch
     - 0001-Replace-use-of-distutils-for-Python-3.12-compatibili.patch
