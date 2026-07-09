@@ -53,6 +53,7 @@ fi
      --disable-doc \
      --enable-internal \
      --disable-ldns \
+     --disable-arcrest-client \
      --with-python="${PYTHON}" \
      "${CONFIGURE_FLAGS[@]}"
 
