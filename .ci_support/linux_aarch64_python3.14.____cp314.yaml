@@ -15,7 +15,7 @@ cxx_compiler:
 cxx_compiler_version:
 - '14'
 docker_image:
-- quay.io/condaforge/linux-anvil-x86_64:alma9
+- quay.io/condaforge/linux-anvil-aarch64:alma9
 gct:
 - 6.2.1705709074
 gfal2:
@@ -33,10 +33,6 @@ pin_run_as_build:
     min_pin: x.x
     max_pin: x.x
 python:
-- 3.10.* *_cpython
-- 3.11.* *_cpython
-- 3.12.* *_cpython
-- 3.13.* *_cp313
 - 3.14.* *_cp314
 python_impl:
 - cpython
@@ -45,7 +41,7 @@ python_min:
 sqlite:
 - '3'
 target_platform:
-- linux-64
+- linux-aarch64
 xrootd:
 - '5'
 zip_keys:
