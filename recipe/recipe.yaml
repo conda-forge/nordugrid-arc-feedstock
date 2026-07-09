@@ -4,8 +4,8 @@ context:
   name: nordugrid-arc
   version: "7.1.2"
 
-recipe:
-  name: nordugrid-arc-split
+package:
+  name: ${{ name|lower }}
   version: ${{ version }}
 
 source:
@@ -17,134 +17,100 @@ source:
 
 build:
   number: 0
+  skip:
+    - win
+    - osx
+    - ppc64le
 
-outputs:
-  - package:
-      name: nordugrid-arc
-    build:
-      skip:
-        - win
-        - ppc64le
-      script: build.sh
-    requirements:
-      build:
-        - ${{ compiler('c') }}
-        - ${{ stdlib("c") }}
-        - ${{ compiler('cxx') }}
-        - pkg-config
-        - make
-        - autoconf
-        - automake
-        - gettext
-        - libtool
-      host:
-        - python
-        - swig
-        - cppunit
-        - gct
-        - gfal2
-        - glib
-        - glibmm-2.4
-        - libsigcpp
-        - libuuid
-        - libxml2
-        - openssl
-        - sqlite
-        - xrootd
-        - zlib
-      run:
-        - python
-    tests:
-      - python:
-          imports:
-            - arc
-            - _arc
-            - arc.common
-            - arc.loader
-            - arc.message
-            - arc.compute
-            - arc.communication
-            - arc.credential
-            - arc.data
-            - arc.delegation
-            - arc.security
-          pip_check: false
-      - script:
-          - arccat --help
-          - arcclean --help
-          - arccp --help
-          - arcget --help
-          - arcinfo --help
-          - arckill --help
-          - arcls --help
-          - arcmkdir --help
-          - arcplugin --help
-          - arcproxy --help
-          - arcrename --help
-          - arcrenew --help
-          - arcresume --help
-          - arcrm --help
-          - arcstat --help
-          - arcsub --help
-          - arcsync --help
-          - arctest --help
-          - "test -f \"${PREFIX}/lib/arc/libaccARCREST.so\""
-          - "test -f \"${PREFIX}/lib/arc/libaccBroker.so\""
-          - "test -f \"${PREFIX}/lib/arc/libaccJobDescriptionParser.so\""
-          - "test -f \"${PREFIX}/lib/arc/libaccPythonBroker.so\""
-          - "test -f \"${PREFIX}/lib/arc/libarcshc.so\""
-          - "test -f \"${PREFIX}/lib/arc/libarcshclegacy.so\""
-          - "test -f \"${PREFIX}/lib/arc/libarcshcotokens.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdatadeliveryservice.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmcfile.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmcgfaldeleg.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmcgridftpdeleg.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmchttp.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmcrucio.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmcsrm.so\""
-          - "test -f \"${PREFIX}/lib/arc/libdmcxrootddeleg.so\""
-          - "test -f \"${PREFIX}/lib/arc/libecho.so\""
-          - "test -f \"${PREFIX}/lib/arc/libidentitymap.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmcchttp.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmccmsgvalidator.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmccsoap.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmcctcp.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmcctls.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmodcredential.so\""
-          - "test -f \"${PREFIX}/lib/arc/libmodcrypto.so\""
-          - if: "python_impl != 'pypy'"
-            then: "test -f \"${PREFIX}/lib/arc/libpythonservice.so\""
-    about:
-      summary: Advanced Resource Connector Middleware
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
+    - ${{ compiler('cxx') }}
+    - pkg-config
+    - make
+    - autoconf
+    - automake
+    - gettext
+    - libtool
+  host:
+    - python
+    - swig
+    - cppunit
+    - gct
+    - gfal2
+    - glib
+    - glibmm-2.4
+    - libsigcpp
+    - libuuid
+    - libxml2
+    - openssl
+    - sqlite
+    - xrootd
+    - zlib
+  run:
+    - python
 
-  - package:
-      name: pyarcrest
-      version: ${{ version }}
-    build:
-      noarch: python
-      script: ${{ PYTHON }} -m pip install ./src/clients/pyarcrest --no-deps --no-build-isolation -vv
-      python:
-        entry_points:
-          - arcrest = pyarcrest.cli.arcrest:main
-    requirements:
-      host:
-        - python ${{ python_min }}.*
-        - pip
-        - setuptools
-        - wheel
-      run:
-        - python >=${{ python_min }}
-        - cryptography
-    tests:
-      - python:
-          python_version: ${{ python_min }}.*
-          imports:
-            - pyarcrest
-          pip_check: true
-      - script:
-          - arcrest --help
-    about:
-      summary: Python client library and CLI for the ARC CE REST interface
+tests:
+  - python:
+      imports:
+        - arc
+        - _arc
+        - arc.common
+        - arc.loader
+        - arc.message
+        - arc.compute
+        - arc.communication
+        - arc.credential
+        - arc.data
+        - arc.delegation
+        - arc.security
+      pip_check: false
+  - script:
+      - arccat --help
+      - arcclean --help
+      - arccp --help
+      - arcget --help
+      - arcinfo --help
+      - arckill --help
+      - arcls --help
+      - arcmkdir --help
+      - arcplugin --help
+      - arcproxy --help
+      - arcrename --help
+      - arcrenew --help
+      - arcresume --help
+      - arcrm --help
+      - arcstat --help
+      - arcsub --help
+      - arcsync --help
+      - arctest --help
+      - "test -f \"${PREFIX}/lib/arc/libaccARCREST.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccBroker.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccJobDescriptionParser.so\""
+      - "test -f \"${PREFIX}/lib/arc/libaccPythonBroker.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarcshc.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarcshclegacy.so\""
+      - "test -f \"${PREFIX}/lib/arc/libarcshcotokens.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdatadeliveryservice.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcfile.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcgfaldeleg.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcgridftpdeleg.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmchttp.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcrucio.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcsrm.so\""
+      - "test -f \"${PREFIX}/lib/arc/libdmcxrootddeleg.so\""
+      - "test -f \"${PREFIX}/lib/arc/libecho.so\""
+      - "test -f \"${PREFIX}/lib/arc/libidentitymap.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmcchttp.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmccmsgvalidator.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmccsoap.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmcctcp.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmcctls.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmodcredential.so\""
+      - "test -f \"${PREFIX}/lib/arc/libmodcrypto.so\""
+      - if: "python_impl != 'pypy'"
+        then: "test -f \"${PREFIX}/lib/arc/libpythonservice.so\""
 
 about:
   license: Apache-2.0
@@ -162,6 +128,5 @@ about:
   documentation: http://www.nordugrid.org/arc/arc6
 
 extra:
-  feedstock-name: nordugrid-arc
   recipe-maintainers:
     - chrisburr
