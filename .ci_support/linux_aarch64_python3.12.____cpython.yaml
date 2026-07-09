@@ -36,8 +36,6 @@ python:
 - 3.12.* *_cpython
 python_impl:
 - cpython
-python_min:
-- '3.10'
 sqlite:
 - '3'
 target_platform:
