@@ -1,0 +1,53 @@
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Thu, 9 Jul 2026 00:00:00 +0000
+Subject: [PATCH] Fix Python bindings with SWIG >= 4.3 multi-phase init
+
+SWIG 4.3 switched Python modules to multi-phase initialisation (PEP 489),
+so each per-module init function now returns a PyModuleDef rather than a
+ready module. The hand-written multi-module loader registered that
+PyModuleDef directly, leaving sub-modules (arc._common, ...) unpopulated
+(AttributeError: 'moduledef' object has no attribute ...). Complete the
+multi-phase initialisation for such modules.
+---
+diff --git a/python/swigmodulesinit_wrap.cpp b/python/swigmodulesinit_wrap.cpp
+index ac110af..d0d5264 100644
+--- a/python/swigmodulesinit_wrap.cpp
++++ b/python/swigmodulesinit_wrap.cpp
+@@ -41,6 +41,37 @@ PyMODVAL (*initfunction)(void)) {
+     fprintf(stderr, "Failed initialising Python module '%s', through Python C API\n", modulename);
+     PyMOD_RETURN(NULL);
+   }
++#if PY_MAJOR_VERSION >= 3
++  // SWIG >= 4.3 emits multi-phase initialised modules (PEP 489): the per-module
++  // init function returns a PyModuleDef object instead of a ready module, and
++  // defers the real initialisation to an exec slot. As these sub-modules are
++  // initialised by hand (rather than by the import machinery) that exec slot
++  // would never run, leaving an unusable PyModuleDef. Detect that case and
++  // finish the initialisation ourselves.
++  if (Py_TYPE(module) == &PyModuleDef_Type) {
++    PyModuleDef *moddef = (PyModuleDef *)module;
++    PyObject *machinery = PyImport_ImportModule("importlib.machinery");
++    PyObject *spec = NULL;
++    PyObject *realmodule = NULL;
++    if (machinery) {
++      spec = PyObject_CallMethod(machinery, "ModuleSpec", "sO", modulename, Py_None);
++      Py_DECREF(machinery);
++    }
++    if (spec) {
++      realmodule = PyModule_FromDefAndSpec(moddef, spec);
++      Py_DECREF(spec);
++    }
++    if (realmodule && PyModule_ExecDef(realmodule, moddef) != 0) {
++      Py_DECREF(realmodule);
++      realmodule = NULL;
++    }
++    if (!realmodule) {
++      fprintf(stderr, "Failed completing multi-phase initialisation of Python module '%s'\n", modulename);
++      PyMOD_RETURN(NULL);
++    }
++    module = realmodule;
++  }
++#endif
+   if(PyModule_AddObject(package, (char *)modulename, module)) {
+     fprintf(stderr, "Failied adding Python module '%s' to package 'arc', through Python C API\n", modulename);
+     PyMOD_RETURN(NULL);
