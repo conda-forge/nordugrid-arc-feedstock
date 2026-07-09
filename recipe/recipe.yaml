@@ -22,6 +22,11 @@ build:
     - win
     - osx
     - ppc64le
+  dynamic_linking:
+    # Linkage was verified clean against the run dependencies (all NEEDED libs
+    # are provided by the run-exports of the host deps), so make regressions fatal.
+    overlinking_behavior: error
+    overdepending_behavior: error
 
 requirements:
   build:
@@ -54,6 +59,8 @@ requirements:
     - python
 
 tests:
+  # 1. Every swig sub-module imports. This also guards the multi-phase module
+  #    initialisation glue (broken by SWIG >= 4.3 until patched).
   - python:
       imports:
         - arc
@@ -68,51 +75,54 @@ tests:
         - arc.delegation
         - arc.security
       pip_check: false
+  # 2. Functional tests that exercise the compiled libraries end to end.
   - script:
-      - arccat --help
-      - arcclean --help
-      - arccp --help
-      - arcget --help
-      - arcinfo --help
-      - arckill --help
-      - arcls --help
-      - arcmkdir --help
-      - arcplugin --help
+      # Drive real code through the swig bindings: URL parsing, ArcLocation,
+      # UserConfig and Logger all call into libarccommon/libarccredential.
+      - python -c "import arc, os; u = arc.URL('https://example.org:8443/d?a=b'); assert (u.Protocol(), u.Host(), u.Port(), u.Path()) == ('https', 'example.org', 8443, '/d'), u; assert os.path.isdir(arc.ArcLocation.Get()); arc.UserConfig(); arc.Logger.getRootLogger(); print('arc bindings functional')"
+      # Copy a local file through the file data-management plugin: this loads
+      # libarccommon + libarcdata + lib/arc/libdmcfile.so at runtime, proving the
+      # data stack and its dynamic linkage actually work (not just that files exist).
+      - echo "nordugrid-arc conda-forge functional test" > infile.txt
+      - arccp "file://${PWD}/infile.txt" "file://${PWD}/outfile.txt"
+      - cmp infile.txt outfile.txt
+      # Cheap link smoke for tool families the above do not cover; each loads a
+      # different set of libraries (credential/crypto, compute, infosys).
       - arcproxy --help
-      - arcrename --help
-      - arcrenew --help
-      - arcresume --help
-      - arcrm --help
-      - arcstat --help
       - arcsub --help
-      - arcsync --help
-      - arctest --help
-      - "test -f \"${PREFIX}/lib/arc/libaccARCREST.so\""
-      - "test -f \"${PREFIX}/lib/arc/libaccBroker.so\""
-      - "test -f \"${PREFIX}/lib/arc/libaccJobDescriptionParser.so\""
-      - "test -f \"${PREFIX}/lib/arc/libaccPythonBroker.so\""
-      - "test -f \"${PREFIX}/lib/arc/libarcshc.so\""
-      - "test -f \"${PREFIX}/lib/arc/libarcshclegacy.so\""
-      - "test -f \"${PREFIX}/lib/arc/libarcshcotokens.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdatadeliveryservice.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmcfile.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmcgfaldeleg.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmcgridftpdeleg.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmchttp.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmcrucio.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmcsrm.so\""
-      - "test -f \"${PREFIX}/lib/arc/libdmcxrootddeleg.so\""
-      - "test -f \"${PREFIX}/lib/arc/libecho.so\""
-      - "test -f \"${PREFIX}/lib/arc/libidentitymap.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmcchttp.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmccmsgvalidator.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmccsoap.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmcctcp.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmcctls.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmodcredential.so\""
-      - "test -f \"${PREFIX}/lib/arc/libmodcrypto.so\""
-      - if: "python_impl != 'pypy'"
-        then: "test -f \"${PREFIX}/lib/arc/libpythonservice.so\""
+      - arcinfo --help
+  # 3. Strict check of the packaged payload. Directory-level globs absorb
+  #    within-directory churn (new plugins, locales, headers, soname bumps) while
+  #    strict fails the build on anything outside them. The python glob is scoped
+  #    to site-packages so a stdlib __pycache__ leak into lib/python*/ (cleaned in
+  #    build.sh) would not match and would be caught here.
+  - package_contents:
+      strict: true
+      bin:
+        - arccp
+        - arcproxy
+        - arcsub
+      lib:
+        - libarccommon
+        - libarccompute
+        - libarcdata
+      include:
+        - arc/ArcVersion.h
+      files:
+        - bin/**
+        - sbin/**
+        - lib/libarc*.so*
+        - lib/arc/**
+        - lib/python*/site-packages/**
+        - libexec/arc/**
+        - include/arc/**
+        - share/arc/**
+        - share/man/man*/*
+        - share/locale/*/LC_MESSAGES/*.mo
+        - etc/arc.conf
+        - etc/arc/**
+        - etc/bash_completion.d/*
+        - etc/rc.d/init.d/*
 
 about:
   license: Apache-2.0
