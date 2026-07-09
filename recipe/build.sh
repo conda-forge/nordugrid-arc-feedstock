@@ -66,3 +66,8 @@ make "-j${CPU_COUNT}"
 make install
 
 make installcheck
+
+# "make install"/"make installcheck" run python with -O/-OO, which writes
+# byte-compiled copies of the imported stdlib modules into $PREFIX/lib/pythonX.Y.
+# Drop these so the package does not ship files that belong to the python package.
+find "${PREFIX}"/lib/python*/ -depth -type d -name __pycache__ -not -path '*/site-packages/*' -exec rm -rf {} + 2>/dev/null || true

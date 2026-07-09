@@ -14,6 +14,7 @@ source:
   patches:
     - 0004-Fix-finding-INSTPREFIX.patch
     - 0001-Replace-use-of-distutils-for-Python-3.12-compatibili.patch
+    - 0006-Fix-swig-4.3-multi-phase-module-init.patch
 
 build:
   number: 0
@@ -33,6 +34,7 @@ requirements:
     - automake
     - gettext
     - libtool
+    - help2man
   host:
     - python
     - swig
