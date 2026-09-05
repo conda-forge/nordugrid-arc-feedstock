@@ -44,6 +44,12 @@ if python --version | grep -c PyPy; then
     CONFIGURE_FLAGS+=(PYTHON_LIBS="-L${PREFIX}/lib -lpypy3-c")
 fi
 
+# configure autodetects the SYSV init script directory by probing the *build
+# host's* /etc for init.d, rc.d/init.d, rc.d (first match wins), so the packaged
+# layout depends on whichever container built it: alma9 has a real
+# /etc/rc.d/init.d and gives etc/rc.d/init.d, while alma10 dropped the SysV
+# initscripts and only /etc/rc.d survives, giving etc/rc.d. Pin it so the
+# package is the same everywhere.
 ./configure \
      --prefix="${PREFIX}" \
      --disable-static \
@@ -55,6 +61,7 @@ fi
      --disable-ldns \
      --disable-arcrest-client \
      --with-python="${PYTHON}" \
+     --with-sysv-scripts-location="${PREFIX}/etc/rc.d/init.d" \
      "${CONFIGURE_FLAGS[@]}"
 
 

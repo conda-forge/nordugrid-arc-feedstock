@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: nordugrid-arc
-  version: "7.1.2"
+  version: "7.2.0"
 
 package:
   name: ${{ name|lower }}
@@ -10,14 +10,14 @@ package:
 
 source:
   url: http://download.nordugrid.org/packages/nordugrid-arc/releases/${{ version }}/src/nordugrid-arc-${{ version }}.tar.gz
-  sha256: 1393e721a7c67688f8298627e1b3674dd8f6d48d22aa76eb8905c9912885b30b
+  sha256: cc2e36f6a09782e5ddefd163d04a30ffa4df6e77d4c2b5c1c4d1d27a460edeb0
   patches:
     - 0004-Fix-finding-INSTPREFIX.patch
     - 0001-Replace-use-of-distutils-for-Python-3.12-compatibili.patch
     - 0006-Fix-swig-4.3-multi-phase-module-init.patch
 
 build:
-  number: 1
+  number: 0
   skip:
     - win
     - osx
@@ -42,6 +42,11 @@ requirements:
     - help2man
   host:
     - python
+    # lib/arc/libpythonservice.so embeds CPython, so it links libpython
+    # directly. Since the conda-forge python package split the shared library
+    # into a separate `libpython` output, that has to be requested explicitly
+    # here and in run below (libpython carries no run-exports).
+    - libpython
     - swig
     - cppunit
     - gct
@@ -57,6 +62,7 @@ requirements:
     - zlib
   run:
     - python
+    - libpython
 
 tests:
   # 1. Every swig sub-module imports. This also guards the multi-phase module
