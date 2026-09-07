@@ -17,7 +17,7 @@ source:
     - 0006-Fix-swig-4.3-multi-phase-module-init.patch
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
     - osx
